@@ -32,10 +32,9 @@ apt-get install -y \
   redis-server \
   rabbitmq-server
 
+apt-get autoremove -y
 
 # Add leinigen
 curl --silent --output $LEIN_BIN $LEIN_URL
 chmod 755 $LEIN_BIN
-
-apt-get autoremove -y
 
