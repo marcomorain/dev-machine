@@ -13,26 +13,32 @@ gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 7F0CEB10
 gpg --export --armor 7F0CEB10  | apt-key add -
 
 apt-get update #> /dev/null
-apt-get install -y python-software-properties
+apt-get install --yes python-software-properties
 
 # Add repositories
 echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-3.0.list
-add-apt-repository "deb http://ftp.heanet.ie/pub/ubuntu/ trusty  main"
-add-apt-repository "deb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted universe multiverse"
-add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main"
-add-apt-repository ppa:webupd8team/java
+add-apt-repository --yes "deb http://ftp.heanet.ie/pub/ubuntu/ trusty  main"
+add-apt-repository --yes "deb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted universe multiverse"
+add-apt-repository --yes "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main"
+apt-add-repository --yes ppa:andrei-pozolotin/maven3
+add-apt-repository --yes ppa:webupd8team/java
 
 # Accept Java TOS
 echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
 
 apt-get update #> /dev/null
 apt-get install -y \
+  sshfs \
+  lxc \
+  maven3 \
   oracle-java8-installer \
   git \
+  tree \
   postgresql-9.4 \
   postgresql-contrib-9.4 \
   mongodb-org \
   redis-server #\
+apt-get remove command-not-found
 
 curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh | bash
 
