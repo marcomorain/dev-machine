@@ -12,7 +12,7 @@ curl --silent $POSTGRES_KEY_URL | apt-key add -
 gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 7F0CEB10
 gpg --export --armor 7F0CEB10  | apt-key add -
 
-apt-get update #> /dev/null
+apt-get update > /dev/null
 apt-get install --yes python-software-properties
 
 # Add repositories
@@ -22,27 +22,34 @@ add-apt-repository --yes "deb mirror://mirrors.ubuntu.com/mirrors.txt trusty mai
 add-apt-repository --yes "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main"
 apt-add-repository --yes ppa:andrei-pozolotin/maven3
 add-apt-repository --yes ppa:webupd8team/java
+add-apt-repository --yes ppa:cwchien/gradle
 
 # Accept Java TOS
 echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
 
-apt-get update #> /dev/null
+apt-get update > /dev/null
 apt-get install -y \
   sshfs \
+  btrfs-tools \
   lxc \
   maven3 \
+  ant \
   oracle-java8-installer \
   git \
   tree \
   postgresql-9.4 \
   postgresql-contrib-9.4 \
   mongodb-org \
+  gradle \
+  gnupg-agent \
   redis-server #\
-apt-get remove command-not-found
+apt-get remove -y command-not-found
 
 curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh | bash
 
 apt-get autoremove -y
+
+modprobe btrfs # start btrfs kernel module
 
 # Add leinigen
 curl --silent --output $LEIN_BIN $LEIN_URL

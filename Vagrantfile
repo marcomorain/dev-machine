@@ -12,7 +12,7 @@ end
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/trusty64"
 
-  mirrored_ports = [6005, 8000, 8080]
+  mirrored_ports = [6005, 8080]
   mirrored_ports.each do |p|
     mirror_port(config, p)
   end
