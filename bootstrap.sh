@@ -20,6 +20,7 @@ echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.
 add-apt-repository --yes "deb http://ftp.heanet.ie/pub/ubuntu/ trusty  main"
 add-apt-repository --yes "deb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted universe multiverse"
 add-apt-repository --yes "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main"
+add-apt-repository --yes ppa:serge-hallyn/userns-natty
 apt-add-repository --yes ppa:andrei-pozolotin/maven3
 add-apt-repository --yes ppa:webupd8team/java
 add-apt-repository --yes ppa:cwchien/gradle
@@ -42,7 +43,9 @@ apt-get install -y \
   mongodb-org \
   gradle \
   gnupg-agent \
-  redis-server #\
+  redis-server \
+  nsexec \
+  uidmap
 apt-get remove -y command-not-found
 
 curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh | bash
@@ -54,5 +57,13 @@ modprobe btrfs # start btrfs kernel module
 # Add leinigen
 curl --silent --output $LEIN_BIN $LEIN_URL
 chmod 755 $LEIN_BIN
+
+echo 'Creating BTRFS volume'
+
+mkdir /volume/
+dd if=/dev/zero of=/volume/btrfs count=2 bs=1G
+losetup /dev/loop0 /volume/btrfs
+mkfs.btrfs /dev/loop0
+mkdir /mnt/btrfs
 
 echo 'Bootstrap complete'
