@@ -30,10 +30,11 @@ add-apt-repository --yes ppa:cwchien/gradle
 echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
 
 apt-get update > /dev/null
-apt-get install -y \
+apt-get install --yes --force-yes \
   sshfs \
   btrfs-tools \
   lxc \
+  acl \
   maven3 \
   ant \
   oracle-java8-installer \
@@ -49,7 +50,7 @@ apt-get install -y \
   nsexec \
   uidmap
 apt-get remove -y command-not-found
-
+apt-get upgrade -y
 apt-get autoremove -y
 
 modprobe btrfs # start btrfs kernel module
@@ -57,6 +58,20 @@ modprobe btrfs # start btrfs kernel module
 # Add leinigen
 curl --silent --output $LEIN_BIN $LEIN_URL
 chmod 755 $LEIN_BIN
+
+# Configure services
+# postgres
+sudo -n -u postgres createuser vagrant -s
+sudo -n -u postgres createuser circle -s
+
+cat << _EOF > /etc/postgresql/9.4/main/pg_hba.conf
+local all postgres            peer
+host  all      all   ::1/128 trust
+host  all      all 0.0.0.0/0 trust
+_EOF
+
+service postgresql restart
+
 
 echo 'Creating BTRFS volume'
 
